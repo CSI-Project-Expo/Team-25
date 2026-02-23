@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { Routes, Route } from "react-router-dom"
 import Navbar from "./components/Navbar"
 
 import Home from "./pages/Home"
@@ -9,7 +9,7 @@ import LiveMap from "./pages/LiveMap"
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <>
       <Navbar />
 
       <Routes>
@@ -19,6 +19,6 @@ export default function App() {
         <Route path="/admin" element={<Admin />} />
         <Route path="/map" element={<LiveMap />} />
       </Routes>
-    </BrowserRouter>
+    </>
   )
 }
