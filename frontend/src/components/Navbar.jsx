@@ -1,52 +1,74 @@
 import { Link, useLocation } from "react-router-dom"
-import { Button } from "@/components/ui/button"
+import { useEffect, useState } from "react"
 
 export default function Navbar() {
   const location = useLocation()
   const isHome = location.pathname === "/"
 
-  return (
-    <div className="fixed top-0 left-0 w-full z-50 backdrop-blur-md bg-black/30 border-b border-white/10">
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4 text-white">
+  const [scrolled, setScrolled] = useState(false)
 
-        <Link to="/" className="text-xl font-bold tracking-wide">
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50)
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  const navLinks = [
+    { name: "Home", path: "/" },
+    { name: "Report Missing", path: "/report-missing" },
+    { name: "Sightings", path: "/report-sighting" },
+    { name: "Live Map", path: "/map" },
+    { name: "Admin", path: "/admin" },
+  ]
+
+  return (
+    <div
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+        isHome && !scrolled
+          ? "bg-transparent text-white"
+          : "bg-white text-black shadow-md"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-8 py-4">
+
+        {/* Logo */}
+        <Link
+          to="/"
+          className="text-xl font-bold tracking-wide hover:opacity-80 transition"
+        >
           MissingLink
         </Link>
 
-        {!isHome && (
-          <div className="flex gap-3">
-            <Link to="/">
-              <Button variant="ghost" className="hover:bg-white/10">
-                Home
-              </Button>
-            </Link>
+        {/* Navigation */}
+        <div className="flex gap-8">
 
-            <Link to="/report-missing">
-              <Button variant="ghost" className="hover:bg-white/10">
-                Report Missing
-              </Button>
-            </Link>
+          {navLinks.map((link) => {
+            const isActive = location.pathname === link.path
 
-            <Link to="/report-sighting">
-              <Button variant="ghost" className="hover:bg-white/10">
-                Sightings
-              </Button>
-            </Link>
+            return (
+              <Link
+                key={link.name}
+                to={link.path}
+                className="relative group font-medium transition"
+              >
+                {link.name}
 
-            <Link to="/map">
-              <Button variant="ghost" className="hover:bg-white/10">
-                Live Map
-              </Button>
-            </Link>
+                {/* Underline animation */}
+                <span
+                  className={`absolute left-0 -bottom-1 h-[2px] w-full transition-all duration-300 ${
+                    isActive
+                      ? "bg-blue-500 scale-x-100"
+                      : "bg-blue-500 scale-x-0 group-hover:scale-x-100"
+                  } origin-left`}
+                />
+              </Link>
+            )
+          })}
 
-            <Link to="/admin">
-              <Button variant="ghost" className="hover:bg-white/10">
-                Admin
-              </Button>
-            </Link>
-          </div>
-        )}
-
+        </div>
       </div>
     </div>
   )
