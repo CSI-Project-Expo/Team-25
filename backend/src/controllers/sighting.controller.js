@@ -31,18 +31,22 @@ const createSighting = async (req, res) => {
 
    
     const aiResult = await getAIMatchResult(
-      missingPerson.description,
-      description
-    );
+  missingPerson,
+  description,
+  photoUrl
+);
 
-    const sighting = await Sighting.create({
-      missingPerson: missingPersonId,
-      description,
-      photoUrl,
-      location,
-      aiMatchScore: aiResult.matchScore,
-      aiReason: aiResult.reason,
-    });
+   const sighting = await Sighting.create({
+  missingPerson: missingPersonId,
+  description,
+  photoUrl,
+  location,
+  aiMatchScore: aiResult.matchScore,      // High / Medium / Low
+  aiReason: aiResult.reason,              // Explanation
+  aiFinalScore: aiResult.finalScore,      // Combined numeric score
+  aiFaceScore: aiResult.faceScore,        // Face similarity
+  aiTextScore: aiResult.textScore,        // Text similarity
+});
 
     res.status(201).json({
       message: "Sighting reported successfully",

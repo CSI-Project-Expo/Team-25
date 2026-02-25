@@ -2,25 +2,21 @@ const mongoose = require("mongoose");
 
 const sightingSchema = new mongoose.Schema(
   {
-    
     missingPerson: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "MissingPerson",
       required: true,
     },
 
-    
     description: {
       type: String,
       required: true,
     },
 
-    
     photoUrl: {
       type: String,
     },
 
-    
     location: {
       latitude: {
         type: Number,
@@ -35,15 +31,30 @@ const sightingSchema = new mongoose.Schema(
       },
     },
 
-    
+    // ✅ AI Results
     aiMatchScore: {
       type: String,
-      enum: ["low", "medium", "high"],
-      default: "low",
+      enum: ["Low", "Medium", "High"],
+      default: "Low",
     },
 
     aiReason: {
       type: String,
+    },
+
+    aiFinalScore: {
+      type: Number,
+      default: 0,
+    },
+
+    aiFaceScore: {
+      type: Number,
+      default: 0,
+    },
+
+    aiTextScore: {
+      type: Number,
+      default: 0,
     },
 
     status: {
