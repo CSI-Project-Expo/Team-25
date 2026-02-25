@@ -6,6 +6,7 @@ import ReportMissing from "./pages/ReportMissing"
 import ReportSighting from "./pages/ReportSighting"
 import Admin from "./pages/Admin"
 import LiveMap from "./pages/LiveMap"
+import CaseDetails from "./pages/CaseDetails"
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
         <Route path="/report-sighting" element={<ReportSighting />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/map" element={<LiveMap />} />
+        <Route path="/case/:id" element={<CaseDetails />} />
       </Routes>
     </>
   )

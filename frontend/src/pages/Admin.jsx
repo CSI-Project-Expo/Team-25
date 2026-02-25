@@ -1,15 +1,16 @@
+import { Link } from "react-router-dom"
+
 export default function Admin() {
   return (
     <div className="min-h-screen pt-28 px-8 bg-gradient-to-br from-gray-50 via-white to-gray-100">
 
       <div className="max-w-7xl mx-auto">
 
-        {/* HEADER */}
         <h1 className="text-3xl font-bold mb-10 text-center">
           Admin Control Dashboard
         </h1>
 
-        {/* STATS CARDS */}
+        {/* STATS */}
         <div className="grid md:grid-cols-3 gap-6 mb-10">
 
           <div className="bg-white p-6 rounded-2xl shadow-lg text-center">
@@ -26,21 +27,6 @@ export default function Admin() {
             <p className="text-4xl font-bold text-green-600">76</p>
             <p className="text-gray-500">Resolved Cases</p>
           </div>
-
-        </div>
-
-        {/* ACTIVE ALERTS */}
-        <div className="bg-white p-8 rounded-2xl shadow-lg mb-10">
-
-          <h2 className="text-xl font-semibold mb-4">
-            Active AI Match Alerts
-          </h2>
-
-          <ul className="space-y-3 text-gray-600">
-            <li>⚠ Possible match detected near Delhi Metro - 85% confidence</li>
-            <li>⚠ New sighting reported in Mumbai Central - Pending review</li>
-            <li>⚠ Multiple reports near Bangalore bus station</li>
-          </ul>
 
         </div>
 
@@ -68,14 +54,22 @@ export default function Admin() {
                 <td className="py-3">Rohan Sharma</td>
                 <td className="text-red-500">Active</td>
                 <td>Delhi</td>
-                <td><button className="text-blue-600">Review</button></td>
+                <td>
+                  <Link to="/case/1" className="text-blue-600 font-medium">
+                    Review
+                  </Link>
+                </td>
               </tr>
 
               <tr>
                 <td className="py-3">Meena Iyer</td>
                 <td className="text-green-600">Found</td>
                 <td>Mumbai</td>
-                <td><button className="text-blue-600">View</button></td>
+                <td>
+                  <Link to="/case/2" className="text-blue-600 font-medium">
+                    View
+                  </Link>
+                </td>
               </tr>
 
             </tbody>
@@ -85,6 +79,7 @@ export default function Admin() {
         </div>
 
       </div>
+
     </div>
   )
 }

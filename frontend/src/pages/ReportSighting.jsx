@@ -1,4 +1,15 @@
+import { useState } from "react"
+
 export default function ReportSighting() {
+  const [imagePreview, setImagePreview] = useState(null)
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      setImagePreview(URL.createObjectURL(file))
+    }
+  }
+
   return (
     <div className="min-h-screen pt-28 px-8 bg-gradient-to-br from-green-50 via-white to-gray-100">
 
@@ -12,14 +23,49 @@ export default function ReportSighting() {
           </h1>
 
           <p className="text-gray-500 mb-6">
-            You can submit information anonymously. Every detail helps.
+            Uploading an image helps authorities verify sightings faster.
+            Uploading is optional.
           </p>
 
           <div className="space-y-4">
 
-            <input className="w-full border p-3 rounded-lg" placeholder="Location Seen" />
+            <input
+              className="w-full border p-3 rounded-lg"
+              placeholder="Location Seen"
+            />
 
-            <textarea className="w-full border p-3 rounded-lg" placeholder="What did you observe?" />
+            <textarea
+              className="w-full border p-3 rounded-lg"
+              placeholder="What did you observe?"
+            />
+
+            {/* IMAGE UPLOAD */}
+            <div className="border-2 border-dashed rounded-lg p-4 text-center">
+
+              <p className="text-sm text-gray-500 mb-2">
+                Upload image (optional)
+              </p>
+
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="w-full"
+              />
+
+            </div>
+
+            {/* IMAGE PREVIEW */}
+            {imagePreview && (
+              <div className="mt-4">
+                <p className="text-sm text-gray-500 mb-2">Preview:</p>
+                <img
+                  src={imagePreview}
+                  alt="Uploaded proof"
+                  className="rounded-lg max-h-60 mx-auto shadow"
+                />
+              </div>
+            )}
 
           </div>
 
@@ -33,25 +79,25 @@ export default function ReportSighting() {
         <div className="bg-white p-10 rounded-2xl shadow-xl">
 
           <h2 className="text-xl font-semibold mb-4">
-            Your Report Saves Lives
+            Why Image Proof Matters
           </h2>
 
           <ul className="space-y-4 text-gray-600">
-            <li>✔ Reports can be anonymous</li>
-            <li>✔ Admin verification ensures safety</li>
-            <li>✔ AI cross-checks sightings with cases</li>
+            <li>✔ Helps admins verify sightings quickly</li>
+            <li>✔ Improves AI matching accuracy</li>
+            <li>✔ Reduces false reports</li>
+            <li>✔ Uploading is completely optional</li>
           </ul>
 
           <div className="mt-8 bg-green-50 p-6 rounded-xl">
             <p className="font-semibold">
-              Community awareness helps reunite families faster.
+              Even a single photo can help reunite a family.
             </p>
           </div>
 
         </div>
 
       </div>
-
     </div>
   )
 }
