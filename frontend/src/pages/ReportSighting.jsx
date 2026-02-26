@@ -1,20 +1,22 @@
-import { useState } from "react"
+import { useState, useRef } from "react"
 
 export default function ReportSighting(){
 
-  const [location,setLocation]=useState("")
-  const [details,setDetails]=useState("")
-  const [preview,setPreview]=useState(null)
-  const [success,setSuccess]=useState(false)
+  const [location,setLocation] = useState("")
+  const [details,setDetails] = useState("")
+  const [preview,setPreview] = useState(null)
+  const [success,setSuccess] = useState(false)
 
-  const handleImage=(e)=>{
-    const file=e.target.files[0]
+  const fileInputRef = useRef(null)
+
+  const handleImage = (e)=>{
+    const file = e.target.files[0]
     if(file){
       setPreview(URL.createObjectURL(file))
     }
   }
 
-  const handleSubmit=(e)=>{
+  const handleSubmit = (e)=>{
     e.preventDefault()
 
     setSuccess(true)
@@ -23,7 +25,13 @@ export default function ReportSighting(){
     setDetails("")
     setPreview(null)
 
+    if(fileInputRef.current){
+      fileInputRef.current.value = ""
+    }
+
     setTimeout(()=>setSuccess(false),3000)
+
+    window.scrollTo({ top:0, behavior:"smooth" })
   }
 
   return(
@@ -31,6 +39,7 @@ export default function ReportSighting(){
 
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
 
+        {/* FORM */}
         <form onSubmit={handleSubmit}
           className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg">
 
@@ -44,17 +53,30 @@ export default function ReportSighting(){
             </div>
           )}
 
-          <input value={location} onChange={(e)=>setLocation(e.target.value)}
+          <input
+            value={location}
+            onChange={(e)=>setLocation(e.target.value)}
             className="w-full border p-3 rounded mb-4"
-            placeholder="Location Seen"/>
+            placeholder="Location seen"
+          />
 
-          <textarea value={details} onChange={(e)=>setDetails(e.target.value)}
+          <textarea
+            value={details}
+            onChange={(e)=>setDetails(e.target.value)}
             className="w-full border p-3 rounded mb-4"
-            placeholder="Details"/>
+            placeholder="Details"
+          />
 
-          <input type="file" accept="image/*" onChange={handleImage}/>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleImage}
+          />
 
-          {preview && <img src={preview} className="mt-4 rounded-xl"/>}
+          {preview && (
+            <img src={preview} className="mt-4 rounded-xl max-h-60 w-full object-cover"/>
+          )}
 
           <button className="w-full mt-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white py-3 rounded-xl">
             Submit Sighting
@@ -62,7 +84,7 @@ export default function ReportSighting(){
 
         </form>
 
-        {/* RESTORED PREMIUM INFO PANEL */}
+        {/* RIGHT INFO PANEL */}
         <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg space-y-6">
 
           <h2 className="text-xl font-semibold">

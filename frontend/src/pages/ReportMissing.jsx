@@ -1,30 +1,44 @@
-import { useState } from "react"
+import { useState, useRef } from "react"
 
 export default function ReportMissing(){
 
-  const [preview,setPreview]=useState(null)
-  const [name,setName]=useState("")
-  const [age,setAge]=useState("")
-  const [details,setDetails]=useState("")
-  const [success,setSuccess]=useState(false)
+  const [name,setName] = useState("")
+  const [age,setAge] = useState("")
+  const [details,setDetails] = useState("")
+  const [preview,setPreview] = useState(null)
+  const [success,setSuccess] = useState(false)
 
-  const handleImage=(e)=>{
-    const file=e.target.files[0]
+  const fileInputRef = useRef(null)
+
+  const handleImage = (e)=>{
+    const file = e.target.files[0]
     if(file){
       setPreview(URL.createObjectURL(file))
     }
   }
 
-  const handleSubmit=(e)=>{
+  const handleSubmit = (e)=>{
     e.preventDefault()
+
+    // Show success message
     setSuccess(true)
 
+    // Reset form fields
     setName("")
     setAge("")
     setDetails("")
     setPreview(null)
 
+    // Reset file input element
+    if(fileInputRef.current){
+      fileInputRef.current.value = ""
+    }
+
+    // Hide success after few seconds
     setTimeout(()=>setSuccess(false),3000)
+
+    // Smooth scroll to top
+    window.scrollTo({ top:0, behavior:"smooth" })
   }
 
   return(
@@ -46,21 +60,37 @@ export default function ReportMissing(){
             </div>
           )}
 
-          <input value={name} onChange={(e)=>setName(e.target.value)}
+          <input
+            value={name}
+            onChange={(e)=>setName(e.target.value)}
             className="w-full border p-3 rounded mb-4"
-            placeholder="Full Name"/>
+            placeholder="Full Name"
+          />
 
-          <input value={age} onChange={(e)=>setAge(e.target.value)}
+          <input
+            value={age}
+            onChange={(e)=>setAge(e.target.value)}
             className="w-full border p-3 rounded mb-4"
-            placeholder="Age"/>
+            placeholder="Age"
+          />
 
-          <textarea value={details} onChange={(e)=>setDetails(e.target.value)}
+          <textarea
+            value={details}
+            onChange={(e)=>setDetails(e.target.value)}
             className="w-full border p-3 rounded mb-4"
-            placeholder="Last seen details"/>
+            placeholder="Last seen details"
+          />
 
-          <input type="file" accept="image/*" onChange={handleImage}/>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleImage}
+          />
 
-          {preview && <img src={preview} className="mt-4 rounded-xl"/>}
+          {preview && (
+            <img src={preview} className="mt-4 rounded-xl max-h-60 w-full object-cover"/>
+          )}
 
           <button className="w-full mt-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-xl">
             Submit Case
@@ -68,7 +98,7 @@ export default function ReportMissing(){
 
         </form>
 
-        {/* RIGHT INFO PANEL RESTORED */}
+        {/* RIGHT INFO PANEL */}
         <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg space-y-6">
 
           <h2 className="text-xl font-semibold">
