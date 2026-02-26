@@ -1,57 +1,95 @@
-export default function ReportMissing() {
-  return (
-    <div className="min-h-screen pt-28 px-8 bg-gradient-to-br from-blue-50 via-white to-gray-100">
 
-      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10">
+import { useState } from "react"
+
+export default function ReportMissing(){
+
+  const [preview,setPreview]=useState(null)
+  const [name,setName]=useState("")
+  const [age,setAge]=useState("")
+  const [details,setDetails]=useState("")
+  const [success,setSuccess]=useState(false)
+
+  const handleImage=(e)=>{
+    const file=e.target.files[0]
+    if(file){
+      setPreview(URL.createObjectURL(file))
+    }
+  }
+
+  const handleSubmit=(e)=>{
+    e.preventDefault()
+    setSuccess(true)
+
+    setName("")
+    setAge("")
+    setDetails("")
+    setPreview(null)
+
+    setTimeout(()=>setSuccess(false),3000)
+  }
+
+  return(
+    <div className="min-h-screen pt-24 px-4 sm:px-6 md:px-8 bg-gradient-to-br from-gray-50 via-white to-gray-100">
+
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
 
         {/* LEFT FORM */}
-        <div className="bg-white p-10 rounded-2xl shadow-xl">
+        <form onSubmit={handleSubmit}
+          className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg">
 
           <h1 className="text-3xl font-bold mb-6">
             Register Missing Person
           </h1>
 
-          <div className="space-y-4">
+          {success && (
+            <div className="mb-4 bg-green-100 text-green-700 p-3 rounded-lg">
+              Case submitted successfully.
+            </div>
+          )}
 
-            <input className="w-full border p-3 rounded-lg" placeholder="Full Name" />
+          <input value={name} onChange={(e)=>setName(e.target.value)}
+            className="w-full border p-3 rounded mb-4"
+            placeholder="Full Name"/>
 
-            <input className="w-full border p-3 rounded-lg" placeholder="Age" />
+          <input value={age} onChange={(e)=>setAge(e.target.value)}
+            className="w-full border p-3 rounded mb-4"
+            placeholder="Age"/>
 
-            <input className="w-full border p-3 rounded-lg" placeholder="Last Seen Location" />
+          <textarea value={details} onChange={(e)=>setDetails(e.target.value)}
+            className="w-full border p-3 rounded mb-4"
+            placeholder="Last seen details"/>
 
-            <textarea className="w-full border p-3 rounded-lg" placeholder="Description / Clothing / Details" />
+          <input type="file" accept="image/*" onChange={handleImage}/>
 
-          </div>
+          {preview && <img src={preview} className="mt-4 rounded-xl"/>}
 
-          <button className="mt-6 w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition">
-            Submit Report
+          <button className="w-full mt-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-xl">
+            Submit Case
           </button>
 
-        </div>
+        </form>
 
-        {/* RIGHT INFO PANEL */}
-        <div className="bg-white p-10 rounded-2xl shadow-xl">
+        {/* RIGHT INFO PANEL RESTORED */}
+        <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg space-y-6">
 
-          <h2 className="text-xl font-semibold mb-4">
-            Why Early Reporting Matters
+          <h2 className="text-xl font-semibold">
+            Why Detailed Reports Matter
           </h2>
 
-          <ul className="space-y-4 text-gray-600">
-            <li>✔ First 24 hours are critical</li>
-            <li>✔ AI helps match sightings automatically</li>
-            <li>✔ Community reporting increases recovery chances</li>
+          <ul className="space-y-3 text-gray-600">
+            <li>✔ Early reporting increases recovery success rate.</li>
+            <li>✔ Accurate descriptions help volunteers identify faster.</li>
+            <li>✔ AI matching improves with richer data.</li>
+            <li>✔ More information enables faster admin verification.</li>
           </ul>
 
-          <div className="mt-8 bg-blue-50 p-6 rounded-xl">
-            <p className="font-semibold">
-              MissingLink connects families, citizens, and admins in real time.
-            </p>
+          <div className="bg-blue-50 p-4 rounded-lg font-medium">
+            The first 24–48 hours are critical. Providing detailed information dramatically increases chances of locating missing persons.
           </div>
 
         </div>
 
       </div>
-
     </div>
   )
 }

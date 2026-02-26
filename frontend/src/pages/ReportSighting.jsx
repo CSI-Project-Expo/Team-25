@@ -1,98 +1,83 @@
 import { useState } from "react"
 
-export default function ReportSighting() {
-  const [imagePreview, setImagePreview] = useState(null)
+export default function ReportSighting(){
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0]
-    if (file) {
-      setImagePreview(URL.createObjectURL(file))
+  const [location,setLocation]=useState("")
+  const [details,setDetails]=useState("")
+  const [preview,setPreview]=useState(null)
+  const [success,setSuccess]=useState(false)
+
+  const handleImage=(e)=>{
+    const file=e.target.files[0]
+    if(file){
+      setPreview(URL.createObjectURL(file))
     }
   }
 
-  return (
-    <div className="min-h-screen pt-28 px-8 bg-gradient-to-br from-green-50 via-white to-gray-100">
+  const handleSubmit=(e)=>{
+    e.preventDefault()
 
-      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10">
+    setSuccess(true)
 
-        {/* LEFT FORM */}
-        <div className="bg-white p-10 rounded-2xl shadow-xl">
+    setLocation("")
+    setDetails("")
+    setPreview(null)
 
-          <h1 className="text-3xl font-bold mb-4">
-            Report a Sighting (Anonymous)
+    setTimeout(()=>setSuccess(false),3000)
+  }
+
+  return(
+    <div className="min-h-screen pt-24 px-4 sm:px-6 md:px-8 bg-gradient-to-br from-green-50 via-white to-gray-100">
+
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+
+        <form onSubmit={handleSubmit}
+          className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg">
+
+          <h1 className="text-3xl font-bold mb-6">
+            Report a Sighting
           </h1>
 
-          <p className="text-gray-500 mb-6">
-            Uploading an image helps authorities verify sightings faster.
-            Uploading is optional.
-          </p>
-
-          <div className="space-y-4">
-
-            <input
-              className="w-full border p-3 rounded-lg"
-              placeholder="Location Seen"
-            />
-
-            <textarea
-              className="w-full border p-3 rounded-lg"
-              placeholder="What did you observe?"
-            />
-
-            {/* IMAGE UPLOAD */}
-            <div className="border-2 border-dashed rounded-lg p-4 text-center">
-
-              <p className="text-sm text-gray-500 mb-2">
-                Upload image (optional)
-              </p>
-
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
-                className="w-full"
-              />
-
+          {success && (
+            <div className="mb-4 bg-green-100 text-green-700 p-3 rounded-lg">
+              Sighting submitted successfully.
             </div>
+          )}
 
-            {/* IMAGE PREVIEW */}
-            {imagePreview && (
-              <div className="mt-4">
-                <p className="text-sm text-gray-500 mb-2">Preview:</p>
-                <img
-                  src={imagePreview}
-                  alt="Uploaded proof"
-                  className="rounded-lg max-h-60 mx-auto shadow"
-                />
-              </div>
-            )}
+          <input value={location} onChange={(e)=>setLocation(e.target.value)}
+            className="w-full border p-3 rounded mb-4"
+            placeholder="Location Seen"/>
 
-          </div>
+          <textarea value={details} onChange={(e)=>setDetails(e.target.value)}
+            className="w-full border p-3 rounded mb-4"
+            placeholder="Details"/>
 
-          <button className="mt-6 w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition">
+          <input type="file" accept="image/*" onChange={handleImage}/>
+
+          {preview && <img src={preview} className="mt-4 rounded-xl"/>}
+
+          <button className="w-full mt-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white py-3 rounded-xl">
             Submit Sighting
           </button>
 
-        </div>
+        </form>
 
-        {/* RIGHT TRUST PANEL */}
-        <div className="bg-white p-10 rounded-2xl shadow-xl">
+        {/* RESTORED PREMIUM INFO PANEL */}
+        <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg space-y-6">
 
-          <h2 className="text-xl font-semibold mb-4">
-            Why Image Proof Matters
+          <h2 className="text-xl font-semibold">
+            How Your Report Helps
           </h2>
 
-          <ul className="space-y-4 text-gray-600">
-            <li>✔ Helps admins verify sightings quickly</li>
-            <li>✔ Improves AI matching accuracy</li>
-            <li>✔ Reduces false reports</li>
-            <li>✔ Uploading is completely optional</li>
+          <ul className="space-y-3 text-gray-600">
+            <li>✔ AI compares sightings with registered missing cases.</li>
+            <li>✔ Images improve facial and clothing recognition.</li>
+            <li>✔ Admins receive real-time alerts.</li>
+            <li>✔ Faster reporting increases recovery probability.</li>
           </ul>
 
-          <div className="mt-8 bg-green-50 p-6 rounded-xl">
-            <p className="font-semibold">
-              Even a single photo can help reunite a family.
-            </p>
+          <div className="bg-green-50 p-4 rounded-lg font-medium">
+            Even anonymous sightings can save lives.
           </div>
 
         </div>
