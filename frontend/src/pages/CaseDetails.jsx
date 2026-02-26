@@ -1,134 +1,95 @@
 import { useParams } from "react-router-dom"
 
-const cases = [
-  {
-    id: "1",
-    name: "Rohan Sharma",
-    status: "Active",
-    lastSeen: "Delhi Metro",
-    missingDate: "12 Feb 2026",
-    aiConfidence: 85,
-    timeline: [
-      "Missing report registered",
-      "AI matched with CCTV near metro",
-      "Public sighting submitted",
-      "Investigation ongoing"
-    ],
-    images: [
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150"
-    ]
-  },
-  {
-    id: "2",
-    name: "Meena Iyer",
-    status: "Found",
-    lastSeen: "Mumbai",
-    missingDate: "2 Jan 2026",
-    aiConfidence: 92,
-    timeline: [
-      "Missing report registered",
-      "Multiple sightings reported",
-      "AI confirmed match",
-      "Person safely found"
-    ],
-    images: [
-      "https://via.placeholder.com/150"
-    ]
-  }
-]
-
-export default function CaseDetails() {
+export default function CaseDetails(){
 
   const { id } = useParams()
-  const person = cases.find(c => c.id === id)
 
-  if (!person) {
-    return <div className="pt-28 text-center">Case not found</div>
-  }
+  return(
+    <div className="min-h-screen pt-24 px-4 sm:px-6 md:px-8 bg-gray-50">
 
-  return (
-    <div className="min-h-screen pt-28 px-8 bg-gradient-to-br from-gray-50 via-white to-gray-100">
+      <div className="max-w-5xl mx-auto space-y-8">
 
-      <div className="max-w-6xl mx-auto space-y-10">
+        {/* MAIN CASE INFO */}
+        <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg">
 
-        {/* HEADER */}
-        <div className="bg-white p-8 rounded-2xl shadow-lg">
-
-          <h1 className="text-3xl font-bold mb-4">
-            {person.name}
+          <h1 className="text-3xl font-bold mb-6">
+            Case #{id} — Rohan Sharma
           </h1>
 
-          <span className={`px-4 py-2 rounded-full text-white text-sm ${
-            person.status === "Active"
-              ? "bg-red-500"
-              : "bg-green-600"
-          }`}>
-            {person.status}
-          </span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700">
 
-          <p className="mt-4">
-            <strong>Missing Since:</strong> {person.missingDate}
-          </p>
+            <p><strong>Status:</strong> Active Missing Case</p>
+            <p><strong>Age:</strong> 16</p>
 
-          <p>
-            <strong>Last Seen:</strong> {person.lastSeen}
-          </p>
+            <p><strong>Missing Since:</strong> January 10, 2026</p>
+            <p><strong>Last Seen Location:</strong> Connaught Place, Delhi</p>
+
+            <p><strong>Reported By:</strong> Family (Father)</p>
+            <p><strong>Clothing Description:</strong> Blue hoodie, black jeans, white sneakers</p>
+
+            <p><strong>How Incident Occurred:</strong> Left school premises after classes and did not return home. Phone switched off shortly after.</p>
+
+          </div>
 
         </div>
 
         {/* AI MATCH CONFIDENCE */}
-        <div className="bg-white p-8 rounded-2xl shadow-lg">
+        <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg">
 
           <h2 className="text-xl font-semibold mb-4">
             AI Match Confidence
           </h2>
 
-          <div className="w-full bg-gray-200 rounded-full h-6">
+          <div className="w-full bg-gray-200 rounded-full h-4">
             <div
-              className="bg-blue-600 h-6 rounded-full text-white text-sm flex items-center justify-center"
-              style={{ width: `${person.aiConfidence}%` }}
-            >
-              {person.aiConfidence}%
-            </div>
+              className="bg-green-600 h-4 rounded-full"
+              style={{width:"72%"}}
+            />
           </div>
 
-        </div>
-
-        {/* TIMELINE */}
-        <div className="bg-white p-8 rounded-2xl shadow-lg">
-
-          <h2 className="text-xl font-semibold mb-6">
-            Investigation Timeline
-          </h2>
-
-          <ul className="space-y-4">
-            {person.timeline.map((step, index) => (
-              <li key={index} className="flex items-center gap-3">
-                <div className="w-3 h-3 bg-blue-600 rounded-full"></div>
-                {step}
-              </li>
-            ))}
-          </ul>
+          <p className="mt-3 text-gray-600">
+            Recent sighting in Delhi metro area shows 72% match probability based on facial and clothing analysis.
+          </p>
 
         </div>
 
-        {/* IMAGE EVIDENCE */}
-        <div className="bg-white p-8 rounded-2xl shadow-lg">
+        {/* INVESTIGATION TIMELINE */}
+        <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg">
 
           <h2 className="text-xl font-semibold mb-6">
-            Evidence / Sightings Images
+            Case Updates Timeline
           </h2>
 
-          <div className="flex gap-4 flex-wrap">
-            {person.images.map((img, i) => (
-              <img
-                key={i}
-                src={img}
-                alt="evidence"
-                className="w-32 h-32 object-cover rounded-lg shadow"
-              />
-            ))}
+          <div className="space-y-6">
+
+            <div>
+              <p className="font-semibold">Jan 10 — Missing Report Filed</p>
+              <p className="text-gray-600 text-sm">
+                Family registered missing case through MissingLink platform.
+              </p>
+            </div>
+
+            <div>
+              <p className="font-semibold">Jan 11 — CCTV Footage Reviewed</p>
+              <p className="text-gray-600 text-sm">
+                CCTV footage shows Rohan leaving school area at 4:15 PM.
+              </p>
+            </div>
+
+            <div>
+              <p className="font-semibold">Jan 12 — Citizen Sighting Reported</p>
+              <p className="text-gray-600 text-sm">
+                Anonymous sighting submitted with image near Rajiv Chowk metro station.
+              </p>
+            </div>
+
+            <div>
+              <p className="font-semibold">Jan 13 — AI Match Alert Generated</p>
+              <p className="text-gray-600 text-sm">
+                System generated 72% confidence match from uploaded image.
+              </p>
+            </div>
+
           </div>
 
         </div>
