@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from "react-router-dom"
+import { HashRouter, Routes, Route } from "react-router-dom"
 import { AnimatePresence } from "framer-motion"
 
 import Navbar from "./components/Navbar"
@@ -13,14 +13,12 @@ import CaseDetails from "./pages/CaseDetails"
 
 export default function App() {
 
-  const location = useLocation()
-
   return (
-    <>
+    <HashRouter>
       <Navbar />
 
       <AnimatePresence mode="wait">
-        <Routes location={location} key={location.pathname}>
+        <Routes>
 
           <Route path="/" element={<PageWrapper><Home/></PageWrapper>} />
           <Route path="/report-missing" element={<PageWrapper><ReportMissing/></PageWrapper>} />
@@ -31,6 +29,6 @@ export default function App() {
 
         </Routes>
       </AnimatePresence>
-    </>
+    </HashRouter>
   )
 }
