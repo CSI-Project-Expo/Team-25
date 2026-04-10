@@ -26,30 +26,37 @@ export function CaseProvider({ children }) {
     }
   ])
 
-  // ✅ ADD NEW CASE (AI STARTS AT 0)
+  // 🔥 Track latest added case
+  const [latestCaseId, setLatestCaseId] = useState(null)
+
+  // ✅ ADD NEW CASE (AI starts at 0)
   const addCase = (newCase) => {
-    setCases(prev => [
-      ...prev,
-      {
-        ...newCase,
-        id: prev.length + 1,
-        status: "active",
-        aiScore: 0,        // 🔥 starts at 0%
-        matches: []
-      }
-    ])
+
+    const newId = cases.length + 1
+
+    const caseWithDefaults = {
+      ...newCase,
+      id: newId,
+      status: "active",
+      aiScore: 0,
+      matches: []
+    }
+
+    setCases(prev => [...prev, caseWithDefaults])
+    setLatestCaseId(newId) // 🔥 remember latest case
   }
 
-  // ✅ ADD SIGHTING → UPDATE AI SCORE + MATCHES
+  // ✅ ADD SIGHTING → update ONLY latest case
   const addSighting = (sighting) => {
+
+    if(!latestCaseId) return
 
     setCases(prev =>
       prev.map(c => {
 
-        if(c.status !== "active") return c
+        if(c.id !== latestCaseId) return c
 
-        // Simulate AI similarity detection
-        const similarity = Math.floor(Math.random() * 40) + 50 // 50–90%
+        const similarity = Math.floor(Math.random() * 40) + 50
 
         if(similarity > 60){
 
