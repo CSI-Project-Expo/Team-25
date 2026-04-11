@@ -1,17 +1,13 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
 import { BrowserRouter } from "react-router-dom"
-import { CaseProvider } from "./context/CaseContext"
 import App from "./App"
-import "./index.css"
-import "leaflet/dist/leaflet.css"
+import "./index.css"   // ✅ VERY IMPORTANT for Tailwind
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
-      <CaseProvider>
-        <App />
-      </CaseProvider>
+      <App />
     </BrowserRouter>
   </React.StrictMode>
 )
