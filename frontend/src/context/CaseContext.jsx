@@ -1,73 +1,49 @@
-import { createContext, useState } from "react"
+import { createContext, useState, useEffect } from "react"
 
 export const CaseContext = createContext()
 
 export function CaseProvider({ children }) {
 
-  const [cases, setCases] = useState([
-    {
-      id: 1,
-      name: "Rohan Sharma",
-      age: 16,
-      address: "Connaught Place, Delhi 110001",
-      details: "Left school premises and did not return home.",
-      image: null,
-      status: "active",
-      position: [28.63, 77.22],
-      aiScore: 72,
-      matches: [
-        {
-          id: 101,
-          location: "Karol Bagh Metro Station",
-          similarity: 78,
-          notes: "Individual wearing similar backpack reported."
-        }
-      ]
+  const [cases, setCases] = useState([])
+
+  // 🔥 LOAD FROM LOCAL STORAGE
+  useEffect(() => {
+    const saved = localStorage.getItem("cases")
+    if(saved){
+      setCases(JSON.parse(saved))
     }
-  ])
+  }, [])
 
-  // 🔥 Track latest added case
-  const [latestCaseId, setLatestCaseId] = useState(null)
+  // 🔥 SAVE TO LOCAL STORAGE
+  useEffect(() => {
+    localStorage.setItem("cases", JSON.stringify(cases))
+  }, [cases])
 
-  // ✅ ADD NEW CASE (AI starts at 0)
   const addCase = (newCase) => {
-
-    const newId = cases.length + 1
-
-    const caseWithDefaults = {
-      ...newCase,
-      id: newId,
-      status: "active",
-      aiScore: 0,
-      matches: []
-    }
-
-    setCases(prev => [...prev, caseWithDefaults])
-    setLatestCaseId(newId) // 🔥 remember latest case
+    setCases(prev => [
+      ...prev,
+      {
+        ...newCase,
+        id: prev.length + 1,
+        status: "active",
+        aiScore: 0,
+        matches: []
+      }
+    ])
   }
 
-  // ✅ ADD SIGHTING → update ONLY latest case
   const addSighting = (sighting) => {
-
-    if(!latestCaseId) return
-
     setCases(prev =>
       prev.map(c => {
 
-        if(c.id !== latestCaseId) return c
+        if(c.status !== "active") return c
 
         const similarity = Math.floor(Math.random() * 40) + 50
 
         if(similarity > 60){
-
-          const updatedScore = Math.min(
-            100,
-            c.aiScore + Math.floor(similarity / 3)
-          )
-
           return {
             ...c,
-            aiScore: updatedScore,
+            aiScore: Math.min(100, c.aiScore + Math.floor(similarity / 3)),
             matches: [
               ...c.matches,
               {
