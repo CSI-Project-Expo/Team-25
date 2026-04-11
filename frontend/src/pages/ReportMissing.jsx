@@ -1,92 +1,159 @@
-
-import { useState } from "react"
+import { useState, useRef, useContext } from "react"
+import { CaseContext } from "../context/CaseContext"
+import { useNavigate } from "react-router-dom"
 
 export default function ReportMissing(){
 
-  const [preview,setPreview]=useState(null)
-  const [name,setName]=useState("")
-  const [age,setAge]=useState("")
-  const [details,setDetails]=useState("")
-  const [success,setSuccess]=useState(false)
+  const { addCase } = useContext(CaseContext)
+  const navigate = useNavigate()
 
-  const handleImage=(e)=>{
-    const file=e.target.files[0]
+  const [name,setName] = useState("")
+  const [age,setAge] = useState("")
+  const [apartment,setApartment] = useState("")
+  const [city,setCity] = useState("")
+  const [state,setState] = useState("")
+  const [zip,setZip] = useState("")
+  const [details,setDetails] = useState("")
+  const [preview,setPreview] = useState(null)
+
+  const fileInputRef = useRef(null)
+
+  const handleImage = (e)=>{
+    const file = e.target.files[0]
     if(file){
       setPreview(URL.createObjectURL(file))
     }
   }
 
-  const handleSubmit=(e)=>{
+  const geocodeAddress = async (address)=>{
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`
+    )
+    const data = await res.json()
+
+    if(data.length === 0) return null
+
+    return [parseFloat(data[0].lat), parseFloat(data[0].lon)]
+  }
+
+  const handleSubmit = async (e)=>{
     e.preventDefault()
-    setSuccess(true)
+
+    const fullAddress = `${apartment}, ${city}, ${state}, ${zip}, India`
+
+    const coordinates = await geocodeAddress(fullAddress)
+
+    if(!coordinates){
+      alert("Invalid address. Try again.")
+      return
+    }
+
+    addCase({
+      name,
+      age,
+      address: fullAddress,
+      details,
+      image: preview,
+      position: coordinates
+    })
 
     setName("")
     setAge("")
+    setApartment("")
+    setCity("")
+    setState("")
+    setZip("")
     setDetails("")
     setPreview(null)
 
-    setTimeout(()=>setSuccess(false),3000)
+    if(fileInputRef.current){
+      fileInputRef.current.value = ""
+    }
+
+    navigate("/admin")
   }
 
   return(
-    <div className="min-h-screen pt-24 px-4 sm:px-6 md:px-8 bg-gradient-to-br from-gray-50 via-white to-gray-100">
+    <div className="min-h-screen pt-24 px-4 bg-gray-50">
 
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8">
 
-        {/* LEFT FORM */}
         <form onSubmit={handleSubmit}
-          className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg">
+          className="bg-white p-8 rounded-xl shadow">
 
-          <h1 className="text-3xl font-bold mb-6">
-            Register Missing Person
+          <h1 className="text-2xl font-bold mb-6">
+            Report Missing Person
           </h1>
 
-          {success && (
-            <div className="mb-4 bg-green-100 text-green-700 p-3 rounded-lg">
-              Case submitted successfully.
-            </div>
+          <input value={name}
+            onChange={(e)=>setName(e.target.value)}
+            placeholder="Full Name"
+            className="w-full border p-3 rounded mb-4"
+          />
+
+          <input value={age}
+            onChange={(e)=>setAge(e.target.value)}
+            placeholder="Age"
+            className="w-full border p-3 rounded mb-4"
+          />
+
+          <input value={apartment}
+            onChange={(e)=>setApartment(e.target.value)}
+            placeholder="Apartment / Building"
+            className="w-full border p-3 rounded mb-4"
+          />
+
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <input value={city}
+              onChange={(e)=>setCity(e.target.value)}
+              placeholder="City"
+              className="border p-3 rounded"
+            />
+            <input value={state}
+              onChange={(e)=>setState(e.target.value)}
+              placeholder="State"
+              className="border p-3 rounded"
+            />
+          </div>
+
+          <input value={zip}
+            onChange={(e)=>setZip(e.target.value)}
+            placeholder="ZIP Code"
+            className="w-full border p-3 rounded mb-4"
+          />
+
+          <textarea value={details}
+            onChange={(e)=>setDetails(e.target.value)}
+            placeholder="Details"
+            className="w-full border p-3 rounded mb-4"
+          />
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleImage}
+          />
+
+          {preview && (
+            <img src={preview}
+              className="mt-4 rounded max-h-60 w-full object-cover"/>
           )}
 
-          <input value={name} onChange={(e)=>setName(e.target.value)}
-            className="w-full border p-3 rounded mb-4"
-            placeholder="Full Name"/>
-
-          <input value={age} onChange={(e)=>setAge(e.target.value)}
-            className="w-full border p-3 rounded mb-4"
-            placeholder="Age"/>
-
-          <textarea value={details} onChange={(e)=>setDetails(e.target.value)}
-            className="w-full border p-3 rounded mb-4"
-            placeholder="Last seen details"/>
-
-          <input type="file" accept="image/*" onChange={handleImage}/>
-
-          {preview && <img src={preview} className="mt-4 rounded-xl"/>}
-
-          <button className="w-full mt-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-xl">
-            Submit Case
+          <button className="w-full mt-6 bg-red-600 text-white py-3 rounded">
+            Submit
           </button>
 
         </form>
 
-        {/* RIGHT INFO PANEL RESTORED */}
-        <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg space-y-6">
-
-          <h2 className="text-xl font-semibold">
-            Why Detailed Reports Matter
+        <div className="bg-white p-8 rounded-xl shadow">
+          <h2 className="text-xl font-semibold mb-4">
+            Why this matters
           </h2>
-
-          <ul className="space-y-3 text-gray-600">
-            <li>✔ Early reporting increases recovery success rate.</li>
-            <li>✔ Accurate descriptions help volunteers identify faster.</li>
-            <li>✔ AI matching improves with richer data.</li>
-            <li>✔ More information enables faster admin verification.</li>
-          </ul>
-
-          <div className="bg-blue-50 p-4 rounded-lg font-medium">
-            The first 24–48 hours are critical. Providing detailed information dramatically increases chances of locating missing persons.
-          </div>
-
+          <p className="text-gray-600">
+            Accurate location helps plot the last known position
+            and improves AI matching for faster recovery.
+          </p>
         </div>
 
       </div>
