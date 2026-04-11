@@ -1,8 +1,11 @@
+
 import { useState, useRef, useContext } from "react"
 import { CaseContext } from "../context/CaseContext"
 import { useNavigate } from "react-router-dom"
 
 export default function ReportMissing() {
+
+  console.log("🔥 NEW REPORT MISSING VERSION LOADED")
 
   const { addCase } = useContext(CaseContext)
   const navigate = useNavigate()
