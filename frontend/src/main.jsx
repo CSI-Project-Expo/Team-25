@@ -4,11 +4,11 @@ import { BrowserRouter } from "react-router-dom"
 import App from "./App"
 import "./index.css"
 
-import { CaseProvider } from "./context/CaseContext" // ✅ ADD THIS
+import { CaseProvider } from "./context/CaseContext"
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <CaseProvider>   {/* ✅ WRAP APP */}
+    <CaseProvider>
       <BrowserRouter>
         <App />
       </BrowserRouter>

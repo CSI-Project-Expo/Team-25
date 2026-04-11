@@ -1,124 +1,100 @@
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet"
+import "leaflet/dist/leaflet.css"
 import { useContext, useState } from "react"
 import { CaseContext } from "../context/CaseContext"
-import L from "leaflet"
 
-const activeIcon = new L.Icon({
-  iconUrl: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
-  iconSize: [32, 32]
-})
-
-const foundIcon = new L.Icon({
-  iconUrl: "https://maps.google.com/mapfiles/ms/icons/green-dot.png",
-  iconSize: [32, 32]
-})
-
-export default function LiveMap(){
-
+export default function LiveMap() {
   const { cases } = useContext(CaseContext)
-  const [filter,setFilter] = useState("all")
+  const [filter, setFilter] = useState("all")
 
-  const filteredCases = filter === "all"
-    ? cases
-    : cases.filter(c => c.status === filter)
+  // ✅ FILTER LOGIC
+  const filteredCases = cases.filter(c => {
+    if (filter === "ongoing") return c.status === "ongoing"
+    if (filter === "found") return c.status === "found"
+    return true
+  })
 
-  return(
-    <div className="min-h-screen pt-24 px-4 sm:px-6 md:px-8 bg-gradient-to-br from-gray-50 via-white to-gray-100">
+  return (
+    <div className="pt-24 px-6 bg-gray-50 min-h-screen">
 
-      <div className="max-w-7xl mx-auto">
+      {/* TITLE */}
+      <h1 className="text-2xl font-bold mb-4">Live Case Map</h1>
 
-        <h1 className="text-3xl sm:text-4xl font-bold text-center mb-6">
-          Live Missing Persons Map
-        </h1>
+      {/* ✅ FILTER BUTTONS (FIXED UI) */}
+      <div className="flex gap-4 mb-6">
+        <button
+          onClick={() => setFilter("all")}
+          className={`px-4 py-2 rounded ${
+            filter === "all" ? "bg-gray-800 text-white" : "bg-gray-200"
+          }`}
+        >
+          All
+        </button>
 
-        {/* FILTER BUTTONS */}
-        <div className="flex flex-wrap justify-center gap-3 mb-6">
+        <button
+          onClick={() => setFilter("ongoing")}
+          className={`px-4 py-2 rounded ${
+            filter === "ongoing" ? "bg-yellow-500 text-white" : "bg-yellow-200"
+          }`}
+        >
+          Ongoing
+        </button>
 
-          <button
-            onClick={()=>setFilter("all")}
-            className={`px-4 py-2 rounded-xl font-medium transition ${
-              filter==="all"
-                ? "bg-black text-white"
-                : "bg-gray-200 hover:bg-gray-300"
-            }`}
-          >
-            All Cases
-          </button>
+        <button
+          onClick={() => setFilter("found")}
+          className={`px-4 py-2 rounded ${
+            filter === "found" ? "bg-green-600 text-white" : "bg-green-200"
+          }`}
+        >
+          Found
+        </button>
+      </div>
 
-          <button
-            onClick={()=>setFilter("active")}
-            className={`px-4 py-2 rounded-xl font-medium transition ${
-              filter==="active"
-                ? "bg-red-600 text-white"
-                : "bg-red-100 hover:bg-red-200"
-            }`}
-          >
-            Active
-          </button>
+      {/* ✅ MAP CONTAINER (NOT FULLSCREEN) */}
+      <div className="h-[500px] w-full rounded-xl overflow-hidden shadow-lg">
 
-          <button
-            onClick={()=>setFilter("found")}
-            className={`px-4 py-2 rounded-xl font-medium transition ${
-              filter==="found"
-                ? "bg-green-600 text-white"
-                : "bg-green-100 hover:bg-green-200"
-            }`}
-          >
-            Found
-          </button>
+        <MapContainer
+          center={[12.9716, 77.5946]}
+          zoom={12}
+          className="h-full w-full"
+        >
 
-        </div>
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-        {/* MAP CONTAINER */}
-        <div className="rounded-2xl overflow-hidden shadow-xl">
-
-          <MapContainer
-            center={[22.9734, 78.6569]}   // Center of India
-            zoom={5}
-            scrollWheelZoom={true}
-            style={{ height: "65vh", width: "100%" }}
-          >
-
-            <TileLayer
-              attribution='&copy; OpenStreetMap contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-
-            {/* DYNAMIC CASE MARKERS */}
-            {filteredCases.map((c)=>(
-              <Marker
-                key={c.id}
-                position={c.position}
-                icon={c.status === "found" ? foundIcon : activeIcon}
-              >
+          {/* ✅ MARKERS */}
+          {filteredCases.map(c => (
+            c.position && (
+              <Marker key={c.id} position={c.position}>
                 <Popup>
-                  <div className="space-y-2">
-                    <h3 className="font-semibold text-lg">
-                      {c.name}
-                    </h3>
 
-                    {c.image && (
-                      <img
-                        src={c.image}
-                        alt="case"
-                        className="rounded-lg max-h-40 w-full object-cover"
-                      />
+                  <div className="text-sm">
+                    <b className="text-base">{c.name}</b><br />
+
+                    📍 <b>Last Seen:</b> {c.address}<br />
+                    🎯 <b>Status:</b> {c.status}<br />
+                    🤖 <b>AI Score:</b> {c.aiScore}%<br />
+
+                    <hr className="my-2"/>
+
+                    <b>Latest Evidence:</b><br />
+
+                    {c.matches.length === 0 ? (
+                      <span>No sightings yet</span>
+                    ) : (
+                      <div>
+                        📍 {c.matches[c.matches.length - 1].location}<br />
+                        🔍 {c.matches[c.matches.length - 1].similarity}% match
+                      </div>
                     )}
 
-                    <p><strong>Age:</strong> {c.age}</p>
-                    <p><strong>Status:</strong> {c.status}</p>
-                    <p><strong>Last Seen:</strong> {c.address}</p>
-                    <p className="text-sm text-gray-600">
-                      {c.details}
-                    </p>
                   </div>
+
                 </Popup>
               </Marker>
-            ))}
+            )
+          ))}
 
-          </MapContainer>
-
-        </div>
+        </MapContainer>
 
       </div>
     </div>
